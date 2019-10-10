@@ -1,5 +1,7 @@
 package 词法分析器
 
+import kotlin.system.exitProcess
+
 //val type = arrayOf("标识符","保留字","常数","运算符","界符")
 
 //var s = """#include<stdio.h>
@@ -17,10 +19,14 @@ package 词法分析器
 //        |   printf("%lf",b);
 //        |}""".trimMargin()
 
-var s = """
+var s = """#include<stdio.h>
+|#include"conio.h"
+|
 |int main()
 |{
+|
 |   long int i;
+|   string a = "张";
 |   int bonus1,bonus2,bonus4,bonus6,bonus10,bonus;
 |   scanf("%ld",&i);
 |   bonus1=100000*0.1;
@@ -46,170 +52,312 @@ var s = """
 """.trimMargin()
 
 val reserveWord = arrayOf(
-    "auto",/*1*/ "break",/*2*/ "case",/*3*/ "char",/*4*/ "const",/*5*/ "continue",/*6*/
-    "default",/*7*/ "do",/*8*/ "double",/*9*/ "else",/*10*/ "enum",/*11*/ "extern",/*12*/ "float",/*13*/
-    "for",/*14*/ "goto",/*15*/ "if",/*16*/ "int",/*17*/ "Int",/*18*/ "long",/*19*/ "Long",/*20*/ "register",/*21*/
-    "return",/*21*/ "short",/*22*/ "signed",/*23*/ "sizeof",/*24*/ "static",/*25*/ "struct",/*26*/
-    "switch",/*27*/ "typedef",/*28*/ "union",/*29*/ "unsigned",/*30*/ "void",/*31*/ "volatile",/*32*/
-    "while",/*33*/ "main",/*34*/ "include",/*35*/ "printf",/*36*/ "scanf",/*37*/ "getch"/*38*/
+    "int"/*1*/, "long"/*2*/, "short"/*3*/, "float"/*4*/, "double"/*5*/, "char"/*6*/,
+    "unsigned"/*7*/, "signed"/*8*/, "const"/*9*/, "void"/*10*/, "volatile"/*11*/,
+    "enum"/*12*/, "struct"/*13*/, "union"/*14*/, "if"/*15*/, "else"/*16*/, "goto"/*17*/,
+    "switch"/*18*/, "case"/*19*/, "do"/*20*/, "while"/*21*/, "for"/*22*/, "continue"/*23*/,
+    "break"/*24*/, "return"/*25*/, "default"/*26*/, "typedef"/*27*/, "auto"/*28*/,
+    "register"/*29*/, "extern"/*30*/, "static"/*31*/, "sizeof"/*32*/
 )
 val operatorOrDelimiter = arrayOf(
-    '+', '-','*', '/', ';', '(', ')', '^',
-    ',', '\"', '\'', '~', '#', '%', '[',
-    ']', '{', '}', '\\', '.', '?', ':'
+    ';'/*33*/, '('/*34*/, ')'/*35*/, '^'/*36*/, ','/*37*/, '\"'/*38*/, '\''/*39*/, '#'/*40*/,
+    '['/*41*/, ']'/*42*/, '{'/*43*/, '}'/*44*/, '\\'/*45*/, '.'/*46*/, '?'/*47*/, ':'/*48*/
 )
 
-val mark = ArrayList<String>()
-var index = 0;
+
+val operationalCharacter = arrayOf(
+    "+"/*49*/, "-"/*50*/, "*"/*51*/, "/"/*52*/, "%"/*53*/, "++"/*54*/, "--"/*55*/, "=="/*56*/, "!="/*57*/,
+    ">"/*58*/, "<"/*59*/, ">="/*60*/, "<="/*61*/, "&&"/*62*/, "||"/*63*/, "!"/*64*/, "&"/*65*/, "|"/*66*/,
+    "^"/*67*/, "~"/*68*/, "<<"/*69*/, ">>"/*70*/, "="/*71*/, "+="/*72*/, "-="/*73*/, "*="/*74*/, "/="/*75*/,
+    "%="/*76*/, "<<="/*77*/, ">>="/*78*/, "&="/*79*/, "^="/*80*/, "|="/*81*/, "->"/*82*/
+)
+
+data class Bean(
+    val VALUE: String,
+    val CLASS: Int
+)
+
+var index: Int = 0
+val wordList = ArrayList<Bean>()
+
 
 fun main() {
-    removeEnter()
-    println(s)
-
     while (index < s.length - 1) {
-        wordAnalysis()
+        removeComment()
     }
 
-    println(mark.toString())
+    removeEnter()
+    println(s)
+    index = 0
+    while (index < s.length - 1) {
+        val bean: Bean? = wordAnalysis()
+        if (bean != null) {
+            wordList.add(bean)
+        }
+    }
+
+    wordList.println()
+
 }
 
-fun wordAnalysis(): Int? {
-//    println(s[index])
+fun ArrayList<Bean>.println(){
+    this.forEach {
+        println("( ${it.VALUE} , ${it.CLASS} )")
+    }
+}
+
+fun removeComment() {
+    if (s[index] == '/') {
+        when {
+            s[index + 1] == '/' -> {
+                var tempIndex = index + 2
+                while (s[tempIndex] != '\n') {
+                    tempIndex++
+                }
+                s = s.replaceRange(index, tempIndex, "")
+                index++
+            }
+            s[index + 1] == '*' -> {
+                var tempIndex = index + 2
+                while (s[tempIndex] != '*' || s[tempIndex + 1] != '/') {
+                    tempIndex++
+                    if (tempIndex == s.length) {
+                        //已到程序结尾，注释出错
+                        println("注释出错")
+                        //直接结束程序
+                        exitProcess(-1)
+                    }
+                }
+                s = s.replaceRange(index, tempIndex + 2, "")
+                index++
+            }
+            else -> index++
+        }
+    } else {
+        index++
+    }
+}
+
+fun wordAnalysis(): Bean? =
     when {
         s[index].isLetter() -> {
             var word = ""
             word += s[index++]
-            while (s[index].isLetter() || s[index].isDigit() || s[index] == '.') {
+            while (s[index].isLetter() || s[index].isDigit()) {
                 word += s[index++]
             }
-            index++
-            when {
-                word in reserveWord -> {
-                    println("这是一个保留字 = $word")
-                    return 3
-                }
-                "." in word -> {
-                    println("这是一个头文件引用 = $word")
-                    return 3
-                }
-                word !in mark -> {
-                    mark.add(word)
-                    println("这是一个关键字 = $word")
-                    return 3
-                }
+            if (word in reserveWord) {
+                Bean(word, reserveWord.indexOf(word) + 1)
+            } else {
+                Bean(word, wordList.size + 83)
             }
         }
         s[index].isDigit() -> {
             var num = ""
             num += s[index++]
-            while(s[index].isDigit() || s[index] == '.'){
-                num+=s[index++]
+            while (s[index].isDigit() || s[index] == '.') {
+                num += s[index++]
             }
-            if('.' in num){
-                println("这是一个数值 = ${num.toDouble()}")
-            }else{
-                println("这是一个数值 = ${num.toInt()}")
+            Bean(num, wordList.size + 83)
+        }
+        s[index] == '+' -> {
+            index++
+            when {
+                s[index] == '+' -> {
+                    index++
+                    createBean("++")
+                }
+                s[index] == '=' -> {
+                    index++
+                    createBean("+=")
+                }
+                else -> {
+                    createBean("+")
+                }
+            }
+        }
+        s[index] == '-' -> {
+            index++
+            when {
+                s[index] == '-' -> {
+                    index++
+                    createBean("--")
+                }
+                s[index] == '=' -> {
+                    index++
+                    createBean("-=")
+                }
+                s[index] == '>' -> {
+                    index++
+                    createBean("->")
+                }
+                else -> {
+                    createBean("-")
+                }
             }
         }
         s[index] == '%' -> {
-            var str = ""
-            str += s[index++]
-            while (s[index].isLetter()) {
-                str += s[index++]
+            index++
+            if (s[index] == '=') {
+                index++
+                createBean("%=")
+            } else {
+                createBean("%")
             }
-            println("这是一个输出格式控制 = $str")
         }
+
         s[index] == '/' -> {
-            if(s[index+1] == '/'){
-                var tempIndex = index + 2
-                while(s[tempIndex] != '\n'){
-                    tempIndex++
-                }
-                s = s.replaceRange(index,tempIndex,"")
-                println("单行注释去除成功")
-                println(s)
-            }else if(s[index + 1] == '*'){
-                var tempIndex = index + 2
-                while(s[tempIndex] != '*' || s[tempIndex+1] != '/'){
-                    tempIndex++
-                    if(tempIndex == s.length){
-                        //已到程序结尾，注释出错
-                        println("注释出错")
-                    }
-                }
-                s= s.replaceRange(index,tempIndex+2,"")
-                println("多行注释去除成功")
-                println(s)
+            index++
+            if (s[index] == '=') {
+                index++
+                createBean("/=")
+            } else {
+                createBean("/")
             }
         }
-        s[index] in operatorOrDelimiter -> {
-            return operatorOrDelimiter.indexOf(s[index++] + 1)
-        }
-        s[index] == '<' -> {
+        s[index] == '*' -> {
             index++
-            return when(s[index]){
-                '=' -> 3
-                '<' -> 3
-                else -> 3
-            }
-        }
-        s[index] == '>' -> {
-            index++
-            return when(s[index]){
-                '=' -> 3
-                '>' -> 3
-                else -> 3
+            if (s[index] == '=') {
+                index++
+                createBean("*=")
+            } else {
+                createBean("*")
             }
         }
         s[index] == '=' -> {
             index++
-            return when(s[index]){
-                '=' -> 3
-                else -> 3
+            if (s[index] == '=') {
+                index++
+                createBean("==")
+            } else {
+                createBean("=")
             }
         }
         s[index] == '!' -> {
             index++
-            return when(s[index]){
-                '=' -> 3
-                else -> 3
+            if (s[index] == '=') {
+                index++
+                createBean("!=")
+            } else {
+                createBean("!")
+            }
+        }
+        s[index] == '<' -> {
+            index++
+            when {
+                s[index] == '=' -> {
+                    index++
+                    createBean("<=")
+                }
+                s[index] == '<' -> {
+                    index++
+                    if (s[index] == '=') {
+                        index++
+                        createBean("<<=")
+                    } else {
+                        createBean("<<")
+                    }
+                }
+                else -> {
+                    createBean("<")
+                }
+            }
+        }
+        s[index] == '>' -> {
+            index++
+            when {
+                s[index] == '=' -> {
+                    index++
+                    createBean(">=")
+                }
+                s[index] == '>' -> {
+                    index++
+                    if (s[index] == '=') {
+                        index++
+                        createBean(">>=")
+                    } else {
+                        createBean(">>")
+                    }
+                }
+                else -> {
+                    createBean(">")
+                }
             }
         }
         s[index] == '&' -> {
             index++
-            return when(s[index]){
-                '&' -> 3
-                else -> 3
+            when {
+                s[index] == '&' -> {
+                    index++
+                    createBean("&&")
+                }
+                s[index] == '=' -> {
+                    index++
+                    createBean("&=")
+                }
+                else -> {
+                    createBean("&")
+                }
             }
         }
         s[index] == '|' -> {
             index++
-            return when(s[index]){
-                '|' -> 3
-                else -> 3
+            when {
+                s[index] == '|' -> {
+                    index++
+                    createBean("||")
+                }
+                s[index] == '=' -> {
+                    index++
+                    createBean("|=")
+                }
+                else -> {
+                    createBean("|")
+                }
             }
+        }
+        s[index] == '^' -> {
+            index++
+            if (s[index] == '=') {
+                index++
+                createBean("^=")
+            } else {
+                createBean("^")
+            }
+        }
+        s[index] == '~' -> {
+            index++
+            createBean("~")
+        }
+        s[index] in operatorOrDelimiter -> {
+            Bean("" + s[index], operatorOrDelimiter.indexOf(s[index++]) + 33)
         }
         s[index] == ' ' -> {
             index++
-            return null
+            null
         }
         s[index] == '\n' -> {
             index++
-            return null
+            null
+        }
+        s[index] == '#' -> {
+            index++
+            Bean("#",0)
         }
         else -> {
             println(s[index] + "--不能被识别")
+            exitProcess(-1)
         }
     }
-    return null
+
+
+fun removeEnter() {
+    s = s.replace("\n", "")
+    s = s.replace(";", ";\n")
+    s = s.replace("}", "}\n")
+    s = s.replace("{", "{\n")
+    s = s.replace(".h>", ".h>\n")
+    s = s.replace(".h\"", ".h\"\n")
 }
 
-fun removeEnter(){
-    s = s.replace("\n","")
-//    s = s.replace("    ","")
-    s = s.replace(";",";\n")
-    s = s.replace("}","}\n")
-    s = s.replace("{","{\n")
-    s = s.replace(".h>",".h>\n")
-    s = s.replace(".h\"",".h\"\n")
-}
+fun createBean(str: String) = Bean(str, operationalCharacter.indexOf(str) + 49)
