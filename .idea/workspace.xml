@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="09c7cde3-84ff-43e9-b782-328527a832a0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/词法分析器/demo.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/语法分析器/Input.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/语法分析器/Main.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/语法分析器/Text.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/编译原理/META-INF/编译原理.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/编译原理/META-INF/编译原理.kotlin_module" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/编译原理/词法分析器/Bean.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/编译原理/词法分析器/Bean.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/编译原理/词法分析器/Test1008Kt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/编译原理/词法分析器/Test1008Kt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/词法分析器/test1008.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/词法分析器/test1008.kt" afterDir="false" />
-    </list>
+    <list default="true" id="09c7cde3-84ff-43e9-b782-328527a832a0" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +115,16 @@
       <workItem from="1571118383287" duration="1754000" />
       <workItem from="1571207112755" duration="109000" />
       <workItem from="1573536378308" duration="3098000" />
+      <workItem from="1573539544377" duration="130000" />
     </task>
+    <task id="LOCAL-00001" summary="&quot;11-12&quot;">
+      <created>1573539642649</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1573539642649</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -146,5 +145,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="&quot;11-12&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;11-12&quot;" />
   </component>
 </project>
