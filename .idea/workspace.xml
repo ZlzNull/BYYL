@@ -16,6 +16,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1RuHX9SaAN2ZlcXd2a2GWWclV3V" />
@@ -116,6 +117,7 @@
       <workItem from="1571207112755" duration="109000" />
       <workItem from="1573536378308" duration="3098000" />
       <workItem from="1573539544377" duration="130000" />
+      <workItem from="1573605081170" duration="256000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;11-12&quot;">
       <created>1573539642649</created>
@@ -124,7 +126,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573539642649</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="&quot;11-12&quot;">
+      <created>1573605153302</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1573605153302</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
